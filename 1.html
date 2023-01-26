@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keyword" content="sort 정렬 linux command shell">
+    <meta name="author" content="dopamine100">
+    <title>sort</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #container_section {
+            display: flex;
+        }
+
+        section nav {
+            flex-basis: 20%;
+            background: #FAFAFA;
+            padding: 20px 30px;
+        }
+
+        section main {
+            flex-basis: 60%;
+            padding: 35px 30px 0;
+            border-right: 1px solid #e6e6e6;
+        }
+
+        section aside {
+            flex-basis: 20%;
+        }
+
+        @media only screen and (max-width: 768px) {
+            #container_section {
+                display: flex;
+                flex-direction: column;
+            } 
+        }
+
+        .sample_code {
+            background-color: #14161E;
+            color: #D7D7D7;
+            font-size: large;
+            /* font-weight: 500; */
+            font-family: Roboto Mono, monospace;
+            padding: 0.75em;
+            /* letter-spacing: 0.1em; */
+            border-radius: 0.5em;
+            white-space: pre-line;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="container">
+
+        <section id="container_section">
+            <nav>
+            </nav>
+
+            <main>
+                <h1>[Linux] sort - 정렬하기</h1>
+                <p>
+                    문자 그대로 정렬할 때 사용할 수 있다.
+                </p>
+                
+                <hr>
+
+                <h2>예시</h2>
+                <h3>1. 아래의 파일을 정렬</h3>
+                <pre class="sample_code"><code># test.txt
+                    b
+                    a
+                    c
+                </code></pre>
+                <pre class="sample_code"><code>$ sort test.txt
+                    a
+                    b
+                    c
+                </code></pre>
+
+                <br>
+                <h3>2. 역순으로 정렬 (-r, --reverse)</h3>
+                <pre class="sample_code"><code>$ sort -r test.txt
+                c
+                b
+                a
+                </code></pre>
+
+                <br>
+                <h3>3. 필드 지정 정렬 (-k, --key=KEYDEF)</h3>
+                <p></p>
+                <pre class="sample_code"><code># test2.txt 
+                    asdf 2
+                    qwer 1
+                    zxcv 3
+                </code></pre>
+                <pre class="sample_code"><code>$ sort -k2 test2.txt 
+                    qwer 1
+                    asdf 2
+                    zxcv 3
+                </code></pre>
+                <p>
+                    2번째 필드(열) 기준으로 정렬
+                    (디폴트 필드 구분자는 하나 이상의 연속된 공백 문자)
+                </p>
+
+                <br>
+                <h3>4. 필드 구분자 지정 정렬 (-t, --field-separator=SEP)</h3>
+                <p></p>
+                <pre class="sample_code"><code># test3.txt 
+                    asdf,2
+                    zxcv,3
+                    qwer,1
+                </code></pre>
+                <pre class="sample_code"><code>$ sort -t, -k2 test3.txt 
+                    qwer,1
+                    asdf,2
+                    zxcv,3
+                </code></pre>
+                <p>
+                    콤마(,)로 구분된 2번째 필드 기준으로 정렬
+                </p>
+                
+            </main>
+            <aside>
+            </aside>
+        </section>
+
+
+    </div>
+</body>
+</html>
