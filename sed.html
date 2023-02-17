@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keyword" content="sed linux command shell">
+    <meta name="author" content="dopamine100">
+    <title>grep</title>
+    <link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+    <div id="container">
+        <section id="container_section">
+            <nav>
+            </nav>
+
+            <main>
+                <h1>[Linux] sed - 스트림 에디터</h1>
+                <p>
+                    입력(files, standard input)을 수정 후 출력(standard-output)<br>
+                </p>
+                
+                <h2>치환</h2>
+                <p><code>[2addr]s/regular expression/replacement/flags</code><br></p>
+
+                <pre class="sample_code"><code># test.txt 
+                    qwer 1234
+                    qwer 1234
+                    qwer 1234
+                    qwer 1234
+                    qwer 1234
+                </code></pre>
+                <pre class="sample_code"><code>$ sed 's/qwer/QWER/' test.txt 
+                    QWER 1234
+                    QWER 1234
+                    QWER 1234
+                    QWER 1234
+                    QWER 1234
+                </code></pre>
+                <p>test.txt의 'qwer'을 'QWER'로 치환</p>
+                
+                <br>
+                <p>아래와 같이 위치(address)를 지정할 수 있습니다.</p>
+                <pre class="sample_code"><code>$ sed '2s/qwer/QWER/' test.txt
+                    qwer 1234
+                    QWER 1234
+                    qwer 1234
+                    qwer 1234
+                    qwer 1234
+                </code></pre>
+                <p>2번째 라인의 'qwer'을 'QWER'로 치환</p>
+
+                <br>
+                <pre class="sample_code"><code>$ sed '2,4s/qwer/QWER/' test.txt
+                    qwer 1234
+                    QWER 1234
+                    QWER 1234
+                    QWER 1234
+                    qwer 1234
+                </code></pre>
+                <p>2~4라인의 'qwer'을 'QWER'로 치환</p>
+
+                <br>
+                <pre class="sample_code"><code>$ sed '2,$s/qwer/QWER/' test.txt
+                    qwer 1234
+                    QWER 1234
+                    QWER 1234
+                    QWER 1234
+                    QWER 1234
+                </code></pre>
+                <p>2~마지막라인($) 'qwer'을 'QWER'로 치환</p>
+
+                <br>
+                <p>아래와 같이 address에 패턴을 사용할 수도 있습니다.</p>
+                <pre class="sample_code"><code>$ cat test.txt 
+                    a qwer
+                    b qwer
+                    aqwer
+                    cqwer
+                    $ sed '/^a/s/qwer/QWER/' test.txt
+                    a QWER
+                    b qwer
+                    aQWER
+                    cqwer
+                </code></pre>
+                <p>'a'로 시작하는 라인의 'qwer'을 'QWER'로 치환</p>
+
+                <br>
+                <p>flags는 'g', 'p', 'i' 등이 있고 몇 개만 소개하면</p>
+                <pre class="sample_code"><code>$ cat test.txt 
+                    qwer qwer qwer
+                    qwer qwer qwer
+                    $ sed 's/qwer/QWER/2' test.txt
+                    qwer QWER qwer
+                    qwer QWER qwer
+                </code></pre>
+                <p>2번째 'qwer'을 'QWER'로 치환</p>
+
+                <br>
+                <pre class="sample_code"><code>$ cat test.txt 
+                    qwer qwer qwer
+                    qwer qwer qwer
+                    $ sed 's/qwer/QWER/g' test.txt
+                    QWER QWER QWER
+                    QWER QWER QWER
+                </code></pre>
+                <p>모든 'qwer'을 'QWER'로 치환</p>
+
+                <br>
+                <h2>삭제</h2>
+                <p><code>[2addr]d</code><br></p>
+                <pre class="sample_code"><code>$ test.txt 
+                    qwer 1234
+                    asdf 5678
+                    qwer 0000
+                    hoge hoge
+                </code></pre>
+                <pre class="sample_code"><code>$ sed '2d' test.txt 
+                    qwer 1234
+                    qwer 0000
+                    hoge hoge
+                </code></pre>
+                <p>2번째 라인 삭제</p>
+
+                <br>
+                <pre class="sample_code"><code>$ sed '2,3d' test.txt
+                    qwer 1234
+                    hoge hoge
+                </code></pre>
+                <p>2~3라인 삭제</p>
+
+                <br>
+                <pre class="sample_code"><code>$ sed '/56/,/00/d' test.txt
+                    qwer 1234
+                    hoge hoge
+                </code></pre>
+                <p>문자열 '56'~'00' 라인 삭제</p>
+                
+                <br>
+                <h2>출력</h2>
+                <p><code>[2addr]p</code><br></p>
+                <pre class="sample_code"><code># test.txt   
+                    qwer 1234
+                    asdf 5678
+                    zxcv 0000
+                </code></pre>
+                <pre class="sample_code"><code># sed 2p test.txt
+                    qwer 1234
+                    asdf 5678
+                    asdf 5678
+                    zxcv 0000
+                </code></pre>
+                <p>2번째 라인을 출력<br>
+                    여기서 주의할 점이 있습니다.
+                    기본적으로 입력의 각 라인은 출력되는데, 이를 방지하기 위해 보통 <code>-n</code>옵션과 같이 사용됩니다.
+                </p>
+                <pre class="sample_code"><code># sed -n 2p test.txt
+                    asdf 5678
+                </code></pre>
+
+                <br>
+                <p>
+                    사실 sed는 이것 외에도 추가, 삽입 등 여러가지 기능이 있지만
+                    개인적으로 자주 사용하는 기능 위주로 정리해보았습니다.
+                </p>
+                <br>
+            </main>
+            <aside>
+            </aside>
+        </section>
+    </div>
+</body>
+</html>
