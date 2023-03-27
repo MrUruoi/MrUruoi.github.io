@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keyword" content="join linux command shell">
+    <meta name="author" content="dopamine100">
+    <title>join</title>
+    <link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+    <div id="container">
+        <section id="container_section">
+            <nav>
+            </nav>
+
+            <main>
+                <h1>[Linux] join</h1>
+                <p>
+                    두 테이블을 연결
+                </p>
+                
+                <br>
+                <p>예시 테이블</p>
+                <pre class="sample_code"><code># cat master.txt 
+                    01 a
+                    02 b
+                    03 c
+                    # cat transaction.txt 
+                    01 4
+                    01 3
+                    02 5
+                    04 3
+                </code></pre>
+
+                <p>join은, 어느 한 열의 데이터를 키(key)로하여 두 파일을 연결합니다.(지정하지 않으면 1열)</p>
+                <pre class="sample_code"><code>join master.txt transaction.txt
+                    01 a 4
+                    01 a 3
+                    02 b 5
+                </code></pre>
+                
+                <p><code>-a</code>옵션을 사용하면 n번째 파일의 연결되지 않은 라인도 출력합니다.</p>
+                <pre class="sample_code"><code>join -a 1 master.txt transaction.txt
+                    01 a 4
+                    01 a 3
+                    02 b 5
+                    03 c
+                </code></pre>
+                <p>
+                    1번째 파일(master.txt) 3번째 라인은 transaction.txt의 어느 라인과도 연결되지 않았지만 강제로 출력<br>
+                    반대 또는 둘 다 지정도 가능
+                </p>
+                <pre class="sample_code"><code>join -a 2 master.txt transaction.txt
+                    01 a 4
+                    01 a 3
+                    02 b 5
+                    04 3
+                    $ join -a 1 -a 2 master.txt transaction.txt
+                    01 a 4
+                    01 a 3
+                    02 b 5
+                    03 c
+                    04 3
+                </code></pre>
+
+
+                <br>
+                <hr>
+            </main>
+            <aside>
+            </aside>
+        </section>
+    </div>
+</body>
+</html>
