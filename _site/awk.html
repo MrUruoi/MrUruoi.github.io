@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keyword" content="awk linux command shell">
+    <meta name="author" content="dopamine100">
+    <title>awk</title>
+    <link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+    <div id="container">
+        <section id="container_section">
+            <nav>
+            </nav>
+
+            <main>
+                <h1>[Linux] awk - 패턴 지향 처리 언어</h1>
+                <p>
+                    awk는 프로그래밍 언어의 한 종류로, 데이터 검색, 추출, 연산 등의 목적으로 자주 사용됩니다.<br>
+                    awk는 상당히 많은 기능을 가지고 있지만, 여기에서는 간단한 사용법과 몇가지 예시만 소개하겠습니다.
+                </p>
+                
+                <h2>pattern-action</h2>
+                <p>
+                    pattern-action 의 기본적인 형태는 아래과 같습니다.<br>
+                    <code>pattern { action }</code><br>
+                    예시를 보면서 설명하겠습니다.
+                </p>
+
+                <pre class="sample_code"><code># test.txt 
+                    qwer
+                    asdf
+                    zxcv
+                </code></pre>
+                <pre class="sample_code"><code>$ awk '/q/ { print }' test.txt
+                    qwer
+                </code></pre>
+                <p>
+                    test.txt의 'q'를 포함한 라인을 출력한다는 의미인데<br>
+                    <code>/q/</code>가 pattern, <code>print</code>가 action을 의미합니다.
+                </p>
+                
+                <br>
+                <p>action이 생략될 수도 있는데, 생략할 경우 기본적으로 출력을 합니다.</p>
+                <pre class="sample_code"><code>$ awk '/q/' test.txt
+                    qwer
+                </code></pre>
+
+                <br>
+                <p>반대로 pattern을 생략하기도 합니다.</p>
+                <pre class="sample_code"><code>$ awk '{ print }' test.txt
+                    qwer
+                    asdf
+                    zxcv
+                </code></pre>
+
+                <h2>출력(print)</h2>
+                <p>awk에서 가장 많이 사용되는 기능중에 하나인 <code>print</code>의 몇가지 예시를 소개하겠습니다.</p>
+                
+                <br>
+                <h3>n번째 필드 출력</h3>
+                <pre class="sample_code"><code>$ test.txt 
+                    1 qwer 1234
+                    2 asdf 5678
+                    3 zxcv 0000
+                </code></pre>
+                <pre class="sample_code"><code>$ awk '{print $1}' test.txt 
+                    1
+                    2
+                    3
+                </code></pre>
+                <p><code>$1 $2 ... $n</code>이 n번째 필드를 의미합니다. $0은 전체필드</p>
+
+                <br>
+                <p>만약 ',' 등으로 구분되어 있는 경우(csv등) <code>-F</code>옵션을 사용합니다.</p>
+                <pre class="sample_code"><code>$ cat test.txt 
+                    1,qwer,1234
+                    2,asdf,5678
+                    3,zxcv,0000
+                    $ awk -F ',' '{print $2}' test.txt
+                    qwer
+                    asdf
+                    zxcv
+                </code></pre>
+
+                <br>
+                <h3>비교를 통해 특정 조건만 출력</h3>
+                <pre class="sample_code"><code>$ cat test.txt 
+                    1 qwer 50
+                    2 asdf 80
+                    3 zxcv 79
+                    $ awk '$3 >= 80 { print }' test.txt
+                    2 asdf 80
+                </code></pre>
+                <p>
+                    > >= < <= == != ?: 등의 연산자를 사용할 수 있습니다.
+                </p>
+
+                <br>
+                <h3>함수 사용</h3>
+                <p>
+                    length rand substr 등 빌트인 함수를 사용할 수 있습니다.
+                    직접 함수를 지정해서 사용할 수도 있지만, 여기에서는 함수 사용 예시만 소개하겠습니다.
+                </p>
+
+                <pre class="sample_code"><code>$ cat test.txt 
+                    1 qwer 50
+                    2 asdf 80
+                    3 zxcv 79
+                    $ awk '{ print toupper($2) }' test.txt  # 2번째 필드를 대문자로 출력
+                    QWER
+                    ASDF
+                    ZXCV
+                </code></pre>
+
+                <br>
+                <h2>BEGIN END</h2>
+                <p>
+                    <code>BEGIN</code>과<code>END</code>라는 특별한 구문이 패턴이 존재하는데,<br>
+                    <code>BEGIN</code>은 첫라인을 읽기전에, <code>END</code>는 마지막 라인을 읽은 후 실행됩니다.
+                </p>
+
+                <pre class="sample_code"><code># test.txt 
+                    qwer
+                    asdf
+                    zxcv
+                    $ awk 'BEGIN{ print "hoge" } END{ print "toto" } { print }' test.txt
+                    hoge
+                    qwer
+                    asdf
+                    zxcv
+                    toto
+                </code></pre>
+
+                <br>
+                <p><code>END</code>를 활용해 특정 필드의 합을 구하는 예시<br></p>
+                <pre class="sample_code"><code># cat test.txt 
+                    1 qwer 50
+                    2 asdf 88
+                    3 zxcv 99
+                    $ awk '{ sum+=$3 } END{ print sum}' test.txt
+                    237
+                </code></pre>
+
+                <br>
+                <h2>참고</h2>
+                <a href="https://www.gnu.org/software/gawk/manual/gawk.html">The GNU Awk User’s Guide</a>
+
+                <br>
+                <hr>
+            </main>
+            <aside>
+            </aside>
+        </section>
+    </div>
+</body>
+</html>

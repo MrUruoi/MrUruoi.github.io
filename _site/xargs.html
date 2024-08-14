@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keyword" content="xargs linux command shell">
+    <meta name="author" content="dopamine100">
+    <title>xargs</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #container_section {
+            display: flex;
+        }
+
+        section nav {
+            flex-basis: 20%;
+            background: #FAFAFA;
+            padding: 20px 30px;
+        }
+
+        section main {
+            flex-basis: 60%;
+            padding: 35px 30px 0;
+            border-right: 1px solid #e6e6e6;
+        }
+
+        section aside {
+            flex-basis: 20%;
+        }
+
+        @media only screen and (max-width: 768px) {
+            #container_section {
+                display: flex;
+                flex-direction: column;
+            } 
+        }
+
+        .sample_code {
+            background-color: #14161E;
+            color: #D7D7D7;
+            font-size: large;
+            /* font-weight: 500; */
+            font-family: Roboto Mono, monospace;
+            padding: 0.75em;
+            /* letter-spacing: 0.1em; */
+            border-radius: 0.5em;
+            white-space: pre-line;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="container">
+
+        <section id="container_section">
+            <nav>
+            </nav>
+
+            <main>
+                <h1>[Linux] xargs - 표준 입력으로 커맨드 실행</h1>
+                <p>
+                    공백(blanks)이나 개행(newlines)으로 구분된 표준 입력으로부터 커맨드를 만들고 실행.
+                </p>
+                
+                <hr>
+
+                <h2>예시</h2>
+                <h3>1. <code>echo abc</code>커맨드를 만들고 실행해보기</h3>
+                <p>일단 아래와 같이 실행해보면</p>
+                <p><code>xargs echo</code>입력 → 엔터 → <code>abc</code>입력 → 엔터 → <code>Ctrl + d</code>입력</p>
+                <pre class="sample_code"><code>$ xargs echo
+                    abc
+                    abc
+                </code></pre>
+                <p>
+                    <code>xargs echo</code>치고 엔터를 치면 표준입력을 입력할 수 있습니다.<br>
+                    <code>abc</code>치고 엔터(여기서 엔터는 단순히 개행)<br>
+                    <code>Ctrl + d</code>는 표준입력의 종료(EOF)를 의미합니다.<br>
+                    결과적으로 <code>echo abc</code>라는 커맨드를 만들고 실행한 것과 동일한 결과가 나옵니다.(마지막 라인)<br>
+                    <br>굳이 <code>xargs</code>써야하나 의문이 생길수도 있는데, 사실 단독으로 쓰는 경우는 거의 없습니다.<br>
+                    <code>xargs</code>의 활용 예시 몇 가지를 소개하면
+                </p>
+
+                <br>
+                <h3>2. 번호를 붙여서 디렉토리 작성</h3>
+                <p>1~10 디렉토리 작성</p>
+                <pre class="sample_code"><code>$ seq 10 | xargs mkdir 
+                    $ ls
+                    1  10  2  3  4  5  6  7  8  9
+                </code></pre>
+
+                <p><code>-I replace-str</code>옵션으로 아래처럼 활용할 수 있습니다.</p>
+                <pre class="sample_code"><code>$ seq 10 | xargs -I@ mkdir doc_@ 
+                    ls
+                    doc_1  doc_10  doc_2  doc_3  doc_4  doc_5  doc_6  doc_7  doc_8  doc_9
+                </code></pre>
+                <p>
+                    여기서 '@'를 사용했는데 '@' 대신 다른 문자를 써도 상관없습니다.
+                </p>
+
+                <br>
+                <p>참고로 커맨드를 지정안하면 디폴트로 /bin/echo가 실행됩니다.</p>
+                <pre class="sample_code"><code>$ seq 10 | xargs
+                    1 2 3 4 5 6 7 8 9 10
+                </code></pre>
+                <p>
+            </main>
+            <aside>
+            </aside>
+        </section>
+
+
+    </div>
+</body>
+</html>

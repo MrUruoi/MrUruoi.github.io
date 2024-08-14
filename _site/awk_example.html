@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keyword" content="awk linux command shell">
+    <meta name="author" content="dopamine100">
+    <title>awk example</title>
+    <link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+    <div id="container">
+        <section id="container_section">
+            <nav>
+            </nav>
+
+            <main>
+                <h1>[Linux] awk 활용</h1>
+                <p>
+                    awk를 이용한 hoge
+                </p>
+                
+                <h2>표계산1 - 각 행의 n열과 m열의 합계</h2>
+
+                <pre class="sample_code"><code># test.txt 
+                    a 0.1 3
+                    b -0.65 3
+                    a 10.6 -20
+                    b 0.22 -30
+                </code></pre>
+                <pre class="sample_code"><code>$ cat test.txt | awk '{print $0,$2+$3}'
+                    a 0.1 3 3.1
+                    b -0.65 3 2.35
+                    a 10.6 -20 -9.4
+                    b 0.22 -30 -29.78
+                </code></pre>
+                
+                <br>
+                <h2>표계산2 - 각열의 합계</h2>
+
+                <pre class="sample_code"><code># test.txt 
+                    a 0.1 3
+                    b -0.65 3
+                    a 10.6 -20
+                    b 0.22 -30
+                </code></pre>
+                <pre class="sample_code"><code>$ cat test.txt | awk '{print;a+=$2;b+=$3} END{print "계",a,b}'
+                    a 0.1 3
+                    b -0.65 3
+                    a 10.6 -20
+                    b 0.22 -30
+                    계 10.27 -44
+                </code></pre>
+
+                <br>
+                <h2>표계산3 - 항목별 각열의 합계</h2>
+
+                <pre class="sample_code"><code># test.txt 
+                    a 0.1 3
+                    b -0.65 3
+                    a 10.6 -20
+                    b 0.22 -30
+                </code></pre>
+                <pre class="sample_code"><code>$ cat test.txt | awk '{print;x[$1]+=$2;y[$1]+=$3} END{for(k in x){print k "계",x[k],y[k]}}'
+                    a 0.1 3
+                    b -0.65 3
+                    a 10.6 -20
+                    b 0.22 -30
+                    a계 10.7 -17
+                    b계 -0.43 -27
+                </code></pre>
+
+
+                <br>
+                <hr>
+            </main>
+            <aside>
+            </aside>
+        </section>
+    </div>
+</body>
+</html>
