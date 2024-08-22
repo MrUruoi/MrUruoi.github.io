@@ -27,7 +27,7 @@ DIY 키트를 사용해서 그다지 어렵지는 않았지만 직접 납땜도 
 
 ### 구입 물품
 
-* CPU DIY Kit TD4, AliExpress
+* CPU DIY Kit TD4 (AliExpress)
 * 납땜용품
   * 인두기, 땜납, 솔더위크, 팁 클리너, 니퍼, 멀티테스터
 * 연습, 동작확인용

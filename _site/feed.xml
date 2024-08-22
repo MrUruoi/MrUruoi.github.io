@@ -1,4 +1,168 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2024-08-15T18:19:33+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Your awesome title</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><author><name>GitHub User</name></author><entry><title type="html">CPU 만들기 (2)</title><link href="http://localhost:4000/etc2024/08/14/how-to-make-cpu-2.html" rel="alternate" type="text/html" title="CPU 만들기 (2)" /><published>2024-08-14T00:00:00+09:00</published><updated>2024-08-14T00:00:00+09:00</updated><id>http://localhost:4000/etc2024/08/14/how-to-make-cpu-2</id><content type="html" xml:base="http://localhost:4000/etc2024/08/14/how-to-make-cpu-2.html"><![CDATA[<p><code class="language-plaintext highlighter-rouge">Reset</code>에 의해 CPU가 시작되며, <code class="language-plaintext highlighter-rouge">Clock</code> 신호에 맞춰 하나씩 처리를 실행합니다.</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2024-08-22T19:55:30+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">MrUruoi</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><author><name>gonayun</name></author><entry><title type="html">CPU 만들기 (4)</title><link href="http://localhost:4000/etc2024/08/22/how-to-make-cpu-4.html" rel="alternate" type="text/html" title="CPU 만들기 (4)" /><published>2024-08-22T00:00:00+09:00</published><updated>2024-08-22T00:00:00+09:00</updated><id>http://localhost:4000/etc2024/08/22/how-to-make-cpu-4</id><content type="html" xml:base="http://localhost:4000/etc2024/08/22/how-to-make-cpu-4.html"><![CDATA[<p>TD4의 사양에 대해 간략히 정리</p>
+
+<h2 id="레지스터의-구성">레지스터의 구성</h2>
+
+<ul>
+  <li>4bit CPU</li>
+  <li>4비트의 연산용 레지스터 2개
+    <ul>
+      <li>A 레지스터, B 레지스터</li>
+      <li>리셋 직후는 0000 (이진수)</li>
+    </ul>
+  </li>
+  <li>4비트 프로그램 카운터
+    <ul>
+      <li>4비트이므로 프로그램은 최대 16스텝</li>
+      <li>리셋 직후는 0000 (이진수)</li>
+    </ul>
+  </li>
+  <li>플래그는 C (캐리) 하나
+    <ul>
+      <li>가산명령에서 캐리가 발생하면 1</li>
+      <li>가산명령 이외에 명령에도 영향이 있으므로, C 플래그를 참조하는 명령은 가산명령 직후 실행되어야 한다</li>
+    </ul>
+  </li>
+  <li>I/O는 단순 패러럴포트로 입출력 모두 4비트
+    <ul>
+      <li>리셋 직후는 0000 (이진수)</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="명령-포맷">명령 포맷</h2>
+
+<ul>
+  <li>모든 명령은 8비트로 구성
+    <ul>
+      <li>상위 4비트가 오퍼레이션 코드, MSB</li>
+      <li>하위 4비트가 이미디어트 데이터(Im), LSB</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="명령-일람">명령 일람</h2>
+
+<ul>
+  <li>가산명령
+    <ul>
+      <li><strong>ADD A, Im</strong>: 0000</li>
+      <li><strong>ADD B, Im</strong>: 0101</li>
+    </ul>
+  </li>
+  <li>A 또는 B레지스터에 Im을 전송
+    <ul>
+      <li><strong>MOV A, Im</strong>: 0011</li>
+      <li><strong>MOV B, Im</strong>: 0111</li>
+    </ul>
+  </li>
+  <li>레지스터 간 전송
+    <ul>
+      <li><strong>MOV A, B</strong>: 0001</li>
+      <li><strong>MOV B, A</strong>: 0100</li>
+    </ul>
+  </li>
+  <li>Im으로 점프
+    <ul>
+      <li><strong>JMP Im</strong>: 1111</li>
+    </ul>
+  </li>
+  <li>조건분기 (C플래그가 설정되어 있지 않으면 점프)
+    <ul>
+      <li><strong>JNC Im</strong>: 1110</li>
+    </ul>
+  </li>
+  <li>입력 포트로부터 A 또는 B레지스터에 전송
+    <ul>
+      <li><strong>IN A</strong>: 0010</li>
+      <li><strong>IN A</strong>: 0110</li>
+    </ul>
+  </li>
+  <li>B 레지스터의 데이터를 출력 포트로 전송
+    <ul>
+      <li><strong>OUT B</strong>: 1001</li>
+    </ul>
+  </li>
+  <li>Im를 출력 포트로 전송
+    <ul>
+      <li><strong>OUT Im</strong>: 1011</li>
+    </ul>
+  </li>
+  <li>사실상 NOP 명령 (00000000)
+    <ul>
+      <li><strong>ADD A, 0</strong></li>
+    </ul>
+  </li>
+</ul>]]></content><author><name>gonayun</name></author><category term="etc." /><category term="CPU" /><category term="cpuの創りかた" /><category term="TD4" /><category term="Specification" /><summary type="html"><![CDATA[TD4의 사양에 대해 간략히 정리]]></summary></entry><entry><title type="html">CPU 만들기 (3)</title><link href="http://localhost:4000/etc2024/08/19/how-to-make-cpu-3.html" rel="alternate" type="text/html" title="CPU 만들기 (3)" /><published>2024-08-19T00:00:00+09:00</published><updated>2024-08-19T00:00:00+09:00</updated><id>http://localhost:4000/etc2024/08/19/how-to-make-cpu-3</id><content type="html" xml:base="http://localhost:4000/etc2024/08/19/how-to-make-cpu-3.html"><![CDATA[<p><code class="language-plaintext highlighter-rouge">ROM</code> Read Only Memory의 약자로 수정이나 삭제가 불가능한 기억장치를 가리킵니다.(역사적인? 이유로 Read Only지만 현재는 수정 가능)<br />
+여기서는 프로그램용으로 DIP스위치를 이용해서 ROM(DIP Switch, 8 Position, SPST)을 제작합니다.</p>
+
+<p><img src="/assets/images/how_to_make_cpu_3_1.png" alt="ROM" /></p>
+
+<h2 id="rom으로써-필요한-기능">ROM으로써 필요한 기능</h2>
+
+<p>필요한 기능이라고 해도 어떠한 데이터(프로그램)를 가지고 있을 뿐, CPU가 그 데이터를 사용합니다.<br />
+CPU가 ROM에게 “n번지 데이터 보내줘” 라는 식인데, 여기서 n번지를 지정하는 신호를 <code class="language-plaintext highlighter-rouge">Address bus</code>, 데이터를 보내는 신호를 <code class="language-plaintext highlighter-rouge">Data bus</code> 라고 합니다.</p>
+
+<h2 id="8bit-출력">8bit 출력</h2>
+
+<p>1bit ROM은 간단히 스위치 ON OFF로 표현 가능합니다.<br />
+현재 만드는 CPU의 명령은 8bit 이기에 8bit 표현이 가능한 DIP스위치를 사용하고,<br />
+16스텝까지의 프로그램 실행이 가능하도록, 16개의 DIP스위치를 사용합니다.</p>
+
+<h2 id="어드레스-선택">어드레스 선택</h2>
+
+<p>n번지를 어떻게 지정할 지의 문제인데, 여기서는 <code class="language-plaintext highlighter-rouge">74HC154</code>(SN74HC154NT, 4-Line to 16-Line Decoder / Demultiplexer)를 사용합니다.<br />
+간단히 설명하면, Input의 A~D에 2진수를 입력하면, Output의 Ȳ0~Ȳ15가 순서대로 L이 됩니다. (여기서는 선택되면 L출력)<br />
+(자세한 설명은 데이터시트를 참고)</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>번지 (이진수)</th>
+      <th>선택</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0 (0000)</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>1 (0001)</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>2 (0010)</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>3 (0011)</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>…|</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>15 (1111)</td>
+      <td>15</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="data-bus의-인버터">Data bus의 인버터</h2>
+
+<p>Data bus의 인버터로 <code class="language-plaintext highlighter-rouge">74HC540</code>(SN74HC540N, Octal Buffer and Line Driver with 3-State Outputs)를 사용합니다.</p>
+
+<h2 id="생략한-것">생략한 것</h2>
+
+<p>어디까지나 CPU의 기본적인 구조와 원리를 이해하기 위한 목적이기에 자세한 내용은 생략했습니다.<br />
+책에는 아래의 내용이 소개되어 있습니다.</p>
+
+<ul>
+  <li>비트수가 많을 때의 문제점</li>
+  <li>다이오드의 사용 이유</li>
+  <li>74HC154의 내부</li>
+</ul>]]></content><author><name>gonayun</name></author><category term="etc." /><category term="CPU" /><category term="cpuの創りかた" /><category term="TD4" /><category term="ROM" /><summary type="html"><![CDATA[ROM Read Only Memory의 약자로 수정이나 삭제가 불가능한 기억장치를 가리킵니다.(역사적인? 이유로 Read Only지만 현재는 수정 가능) 여기서는 프로그램용으로 DIP스위치를 이용해서 ROM(DIP Switch, 8 Position, SPST)을 제작합니다.]]></summary></entry><entry><title type="html">CPU 만들기 (2)</title><link href="http://localhost:4000/etc2024/08/15/how-to-make-cpu-2.html" rel="alternate" type="text/html" title="CPU 만들기 (2)" /><published>2024-08-15T00:00:00+09:00</published><updated>2024-08-15T00:00:00+09:00</updated><id>http://localhost:4000/etc2024/08/15/how-to-make-cpu-2</id><content type="html" xml:base="http://localhost:4000/etc2024/08/15/how-to-make-cpu-2.html"><![CDATA[<p><code class="language-plaintext highlighter-rouge">Reset</code>에 의해 CPU가 시작되며, <code class="language-plaintext highlighter-rouge">Clock</code> 신호에 맞춰 하나씩 처리를 실행합니다.</p>
 
 <h2 id="리셋-회로">리셋 회로</h2>
 
@@ -51,7 +215,7 @@
 <h3 id="구입-물품">구입 물품</h3>
 
 <ul>
-  <li>CPU DIY Kit TD4, AliExpress</li>
+  <li>CPU DIY Kit TD4 (AliExpress)</li>
   <li>납땜용품
     <ul>
       <li>인두기, 땜납, 솔더위크, 팁 클리너, 니퍼, 멀티테스터</li>
@@ -216,7 +380,7 @@
 
 <h2 id="finally">Finally</h2>
 
-<p>There’s actually a lot more to Markdown than this. See the official <a href="https://daringfireball.net/projects/markdown/basics">introduction</a> and <a href="https://daringfireball.net/projects/markdown/syntax">syntax</a> for more information. However, be aware that this is not using the official implementation, and this might work subtly differently in some of the little things.</p>]]></content><author><name>GitHub User</name></author><category term="markdown" /><category term="example" /><category term="markdown" /><summary type="html"><![CDATA[This note demonstrates some of what Markdown is capable of doing.]]></summary></entry><entry><title type="html">Mathjax Test</title><link href="http://localhost:4000/markdown/2018/05/26/mathjax-test.html" rel="alternate" type="text/html" title="Mathjax Test" /><published>2018-05-26T00:00:00+09:00</published><updated>2018-05-26T00:00:00+09:00</updated><id>http://localhost:4000/markdown/2018/05/26/mathjax-test</id><content type="html" xml:base="http://localhost:4000/markdown/2018/05/26/mathjax-test.html"><![CDATA[<ul>
+<p>There’s actually a lot more to Markdown than this. See the official <a href="https://daringfireball.net/projects/markdown/basics">introduction</a> and <a href="https://daringfireball.net/projects/markdown/syntax">syntax</a> for more information. However, be aware that this is not using the official implementation, and this might work subtly differently in some of the little things.</p>]]></content><author><name>gonayun</name></author><category term="markdown" /><category term="example" /><category term="markdown" /><summary type="html"><![CDATA[This note demonstrates some of what Markdown is capable of doing.]]></summary></entry><entry><title type="html">Mathjax Test</title><link href="http://localhost:4000/markdown/2018/05/26/mathjax-test.html" rel="alternate" type="text/html" title="Mathjax Test" /><published>2018-05-26T00:00:00+09:00</published><updated>2018-05-26T00:00:00+09:00</updated><id>http://localhost:4000/markdown/2018/05/26/mathjax-test</id><content type="html" xml:base="http://localhost:4000/markdown/2018/05/26/mathjax-test.html"><![CDATA[<ul>
   <li>A safe integer is an integer that
     <ul>
       <li>can be exactly represented as an IEEE-754 double precision number, and</li>
@@ -228,7 +392,7 @@
       <li>it can be exactly represented</li>
     </ul>
   </li>
-</ul>]]></content><author><name>GitHub User</name></author><category term="markdown" /><category term="test" /><summary type="html"><![CDATA[A safe integer is an integer that can be exactly represented as an IEEE-754 double precision number, and whose IEEE-75 representation cannot be the result of rounding any other integer to fit the IEEE-754 representation For example, $ 2 ^ {53} - 1 $ is a safe integer, it can be exactly represented]]></summary></entry><entry><title type="html">Video example</title><link href="http://localhost:4000/example/2017/12/18/video-example.html" rel="alternate" type="text/html" title="Video example" /><published>2017-12-18T00:00:00+09:00</published><updated>2017-12-18T00:00:00+09:00</updated><id>http://localhost:4000/example/2017/12/18/video-example</id><content type="html" xml:base="http://localhost:4000/example/2017/12/18/video-example.html"><![CDATA[<h2 id="canon-in-d-pachelbels-canon---cello--piano-best-wedding-version">Canon in D (Pachelbel’s Canon) - Cello &amp; Piano [BEST WEDDING VERSION]</h2>
+</ul>]]></content><author><name>gonayun</name></author><category term="markdown" /><category term="test" /><summary type="html"><![CDATA[A safe integer is an integer that can be exactly represented as an IEEE-754 double precision number, and whose IEEE-75 representation cannot be the result of rounding any other integer to fit the IEEE-754 representation For example, $ 2 ^ {53} - 1 $ is a safe integer, it can be exactly represented]]></summary></entry><entry><title type="html">Video example</title><link href="http://localhost:4000/example/2017/12/18/video-example.html" rel="alternate" type="text/html" title="Video example" /><published>2017-12-18T00:00:00+09:00</published><updated>2017-12-18T00:00:00+09:00</updated><id>http://localhost:4000/example/2017/12/18/video-example</id><content type="html" xml:base="http://localhost:4000/example/2017/12/18/video-example.html"><![CDATA[<h2 id="canon-in-d-pachelbels-canon---cello--piano-best-wedding-version">Canon in D (Pachelbel’s Canon) - Cello &amp; Piano [BEST WEDDING VERSION]</h2>
 <p>Some of you know that we occasionally play for weddings. As you can imagine, we get a LOT of requests for Canon in D, and we discovered that there were no good arrangements available anywhere for piano and cello! Hard to believe given its popularity. So we decided to make our own! We tried to stick as closely to the original as possible (which was written for three violins and basso continuo), and we performed it <em>not</em> at a snail’s pace so the bride can actually make it down the aisle without putting everyone to sleep. 🙊(Yeah, we said it! Nobody likes a slow processional!) Also, the number one complaint about this piece from cellists is always how booooring it is to play because they literally have to play the same 8 bass notes over and over for the entire piece. Problem solved with this arrangement because the cello never has to play the bass! 🙌(The piano does, but we get lots of other fun stuff too so it’s ok!) So for all you musicians out there playing weddings, we hope you enjoy playing this arrangement a little more than the ones you were used to…You can get it from www.musicnotes.com. 😊Be sure to let us know in the comments if you do!</p>
 
 <p><img src="//www.youtube.com/watch?v=Ptk_1Dc2iPY" alt="" /></p>
@@ -258,7 +422,7 @@ some of his greatest musical breakthroughs in songs such as bad guy, bury a frie
 
 <h2 id="this-is-the-poster-image">This is the poster image</h2>
 <p>In modern browsers, adding a video to your page is as easy as adding an image. No longer do you need to deal with special plug-ins or require crazy markup, you can do it with a single element.
-<img src="//www.html5rocks.com/en/tutorials/video/basics/devstories.webm" alt="video" /></p>]]></content><author><name>GitHub User</name></author><category term="example" /><category term="video" /><summary type="html"><![CDATA[Canon in D (Pachelbel’s Canon) - Cello &amp; Piano [BEST WEDDING VERSION] Some of you know that we occasionally play for weddings. As you can imagine, we get a LOT of requests for Canon in D, and we discovered that there were no good arrangements available anywhere for piano and cello! Hard to believe given its popularity. So we decided to make our own! We tried to stick as closely to the original as possible (which was written for three violins and basso continuo), and we performed it not at a snail’s pace so the bride can actually make it down the aisle without putting everyone to sleep. 🙊(Yeah, we said it! Nobody likes a slow processional!) Also, the number one complaint about this piece from cellists is always how booooring it is to play because they literally have to play the same 8 bass notes over and over for the entire piece. Problem solved with this arrangement because the cello never has to play the bass! 🙌(The piano does, but we get lots of other fun stuff too so it’s ok!) So for all you musicians out there playing weddings, we hope you enjoy playing this arrangement a little more than the ones you were used to…You can get it from www.musicnotes.com. 😊Be sure to let us know in the comments if you do!]]></summary></entry><entry><title type="html">Table example</title><link href="http://localhost:4000/example/2017/12/15/table-example.html" rel="alternate" type="text/html" title="Table example" /><published>2017-12-15T00:00:00+09:00</published><updated>2017-12-15T00:00:00+09:00</updated><id>http://localhost:4000/example/2017/12/15/table-example</id><content type="html" xml:base="http://localhost:4000/example/2017/12/15/table-example.html"><![CDATA[<h2 id="table-example-as-below">Table example as below</h2>
+<img src="//www.html5rocks.com/en/tutorials/video/basics/devstories.webm" alt="video" /></p>]]></content><author><name>gonayun</name></author><category term="example" /><category term="video" /><summary type="html"><![CDATA[Canon in D (Pachelbel’s Canon) - Cello &amp; Piano [BEST WEDDING VERSION] Some of you know that we occasionally play for weddings. As you can imagine, we get a LOT of requests for Canon in D, and we discovered that there were no good arrangements available anywhere for piano and cello! Hard to believe given its popularity. So we decided to make our own! We tried to stick as closely to the original as possible (which was written for three violins and basso continuo), and we performed it not at a snail’s pace so the bride can actually make it down the aisle without putting everyone to sleep. 🙊(Yeah, we said it! Nobody likes a slow processional!) Also, the number one complaint about this piece from cellists is always how booooring it is to play because they literally have to play the same 8 bass notes over and over for the entire piece. Problem solved with this arrangement because the cello never has to play the bass! 🙌(The piano does, but we get lots of other fun stuff too so it’s ok!) So for all you musicians out there playing weddings, we hope you enjoy playing this arrangement a little more than the ones you were used to…You can get it from www.musicnotes.com. 😊Be sure to let us know in the comments if you do!]]></summary></entry><entry><title type="html">Table example</title><link href="http://localhost:4000/example/2017/12/15/table-example.html" rel="alternate" type="text/html" title="Table example" /><published>2017-12-15T00:00:00+09:00</published><updated>2017-12-15T00:00:00+09:00</updated><id>http://localhost:4000/example/2017/12/15/table-example</id><content type="html" xml:base="http://localhost:4000/example/2017/12/15/table-example.html"><![CDATA[<h2 id="table-example-as-below">Table example as below</h2>
 
 <p><strong>For now, these extended features are provided:</strong></p>
 
@@ -602,7 +766,7 @@ This feature is contributed by <a href="https://github.com/Lucas-C">Lucas-C</a>.
       <td style="text-align: left"> </td>
     </tr>
   </tbody>
-</table>]]></content><author><name>GitHub User</name></author><category term="example" /><category term="table" /><summary type="html"><![CDATA[Table example as below]]></summary></entry><entry><title type="html">Mermaid example</title><link href="http://localhost:4000/example/2017/12/08/mermaid-example.html" rel="alternate" type="text/html" title="Mermaid example" /><published>2017-12-08T00:00:00+09:00</published><updated>2017-12-08T00:00:00+09:00</updated><id>http://localhost:4000/example/2017/12/08/mermaid-example</id><content type="html" xml:base="http://localhost:4000/example/2017/12/08/mermaid-example.html"><![CDATA[<h3 id="1-pie-chart">1. Pie chart</h3>
+</table>]]></content><author><name>gonayun</name></author><category term="example" /><category term="table" /><summary type="html"><![CDATA[Table example as below]]></summary></entry><entry><title type="html">Mermaid example</title><link href="http://localhost:4000/example/2017/12/08/mermaid-example.html" rel="alternate" type="text/html" title="Mermaid example" /><published>2017-12-08T00:00:00+09:00</published><updated>2017-12-08T00:00:00+09:00</updated><id>http://localhost:4000/example/2017/12/08/mermaid-example</id><content type="html" xml:base="http://localhost:4000/example/2017/12/08/mermaid-example.html"><![CDATA[<h3 id="1-pie-chart">1. Pie chart</h3>
 
 <p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoicGllIHRpdGxlIFBldHMgYWRvcHRlZCBieSB2b2x1bnRlZXJzXG5cIkRvZ3NcIiA6IDM4NlxuXCJDYXRzXCIgOiA4NVxuXCJSYXRzXCIgOiAzNSIsIm1lcm1haWQiOm51bGx9" /></p>
 
@@ -616,196 +780,4 @@ This feature is contributed by <a href="https://github.com/Lucas-C">Lucas-C</a>.
 <p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoiY2xhc3NEaWFncmFtXG5BbmltYWwgPHwtLSBEdWNrXG5BbmltYWwgPHwtLSBGaXNoXG5BbmltYWwgPHwtLSBaZWJyYVxuQW5pbWFsIDogK2ludCBhZ2VcbkFuaW1hbCA6ICtTdHJpbmcgZ2VuZGVyXG5BbmltYWw6ICtpc01hbW1hbCgpXG5BbmltYWw6ICttYXRlKClcbmNsYXNzIER1Y2t7XG4rU3RyaW5nIGJlYWtDb2xvclxuK3N3aW0oKVxuK3F1YWNrKClcbn1cbmNsYXNzIEZpc2h7XG4taW50IHNpemVJbkZlZXRcbi1jYW5FYXQoKVxufVxuY2xhc3MgWmVicmF7XG4rYm9vbCBpc193aWxkXG4rcnVuKClcbn0iLCJtZXJtYWlkIjpudWxsfQ" /></p>
 
 <h3 id="4-state-diagram">4. State diagram</h3>
-<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoic3RhdGVEaWFncmFtXG5bKl0gLS0-IFN0aWxsXG5TdGlsbCAtLT4gWypdXG4lJS1cblN0aWxsIC0tPiBNb3Zpbmdcbk1vdmluZyAtLT4gU3RpbGxcbk1vdmluZyAtLT4gQ3Jhc2hcbkNyYXNoIC0tPiBbKl0iLCJtZXJtYWlkIjpudWxsfQ" /></p>]]></content><author><name>GitHub User</name></author><category term="example" /><category term="mermaid" /><summary type="html"><![CDATA[1. Pie chart]]></summary></entry><entry><title type="html">Plantuml example</title><link href="http://localhost:4000/example/2017/12/04/plantuml-example.html" rel="alternate" type="text/html" title="Plantuml example" /><published>2017-12-04T00:00:00+09:00</published><updated>2017-12-04T00:00:00+09:00</updated><id>http://localhost:4000/example/2017/12/04/plantuml-example</id><content type="html" xml:base="http://localhost:4000/example/2017/12/04/plantuml-example.html"><![CDATA[<h2 id="my-first-plantuml">My First PlantUML</h2>
-
-<h3 id="plantuml-block-1">PlantUML Block-1</h3>
-<p><img class="plantuml" src="http://www.plantuml.com/plantuml/svg/~h407374617274756d6c0a426f62202d3e20416c696365203a2068656c6c6f0a40656e64756d6c" /></p>
-
-<h3 id="plantuml-block-2">PlantUML Block-2</h3>
-<p><img class="plantuml" src="http://www.plantuml.com/plantuml/svg/~h407374617274756d6c0a426f62202d3e20416c696365203a2068656c6c6f20776f726c640a40656e64756d6c" /></p>
-
-<h3 id="plantuml-block-3">PlantUML Block-3</h3>
-<p><img class="plantuml" src="http://www.plantuml.com/plantuml/svg/~h407374617274756d6c0a282a29202d2d3e2022496e697469616c697a6174696f6e220a0a69662022536f6d65205465737422207468656e0a20202d2d3e5b747275655d2022536f6d65204163746976697479220a20202d2d3e2022416e6f74686572206163746976697479220a20202d72696768742d3e20282a290a656c73650a20202d3e5b66616c73655d2022536f6d657468696e6720656c7365220a20202d2d3e5b456e64696e672070726f636573735d20282a290a656e6469660a40656e64756d6c" /></p>
-
-<h3 id="plantuml-block-4">PlantUML Block-4</h3>
-
-<p><img class="plantuml" src="http://www.plantuml.com/plantuml/svg/~h407374617274756d6c0a736b696e706172616d2068616e647772697474656e20747275650a0a736b696e706172616d2075736563617365207b0a20204261636b67726f756e64436f6c6f72204461726b536561477265656e0a2020426f72646572436f6c6f72204461726b536c617465477261790a0a20204261636b67726f756e64436f6c6f723c3c204d61696e203e3e2059656c6c6f77477265656e0a2020426f72646572436f6c6f723c3c204d61696e203e3e2059656c6c6f77477265656e0a0a20204172726f77436f6c6f72204f6c6976650a20204163746f72426f72646572436f6c6f7220626c61636b0a20204163746f72466f6e744e616d6520436f75726965720a0a20204163746f724261636b67726f756e64436f6c6f723c3c2048756d616e203e3e20476f6c640a7d0a0a55736572203c3c2048756d616e203e3e0a3a4d61696e2044617461626173653a206173204d7953716c203c3c204170706c69636174696f6e203e3e0a28537461727429203c3c204f6e652053686f74203e3e0a2855736520746865206170706c69636174696f6e29206173202855736529203c3c204d61696e203e3e0a0a55736572202d3e20285374617274290a55736572202d2d3e2028557365290a0a4d7953716c202d2d3e2028557365290a0a40656e64756d6c" /></p>]]></content><author><name>GitHub User</name></author><category term="example" /><category term="plantuml" /><summary type="html"><![CDATA[My First PlantUML]]></summary></entry><entry><title type="html">Quick markdown example</title><link href="http://localhost:4000/markdown/2017/06/10/quick-mardown-example.html" rel="alternate" type="text/html" title="Quick markdown example" /><published>2017-06-10T00:00:00+09:00</published><updated>2017-06-10T00:00:00+09:00</updated><id>http://localhost:4000/markdown/2017/06/10/quick-mardown-example</id><content type="html" xml:base="http://localhost:4000/markdown/2017/06/10/quick-mardown-example.html"><![CDATA[<p>Paragraphs are separated by a blank line.</p>
-
-<p>2nd paragraph. <em>Italic</em>, <strong>bold</strong>, and <code class="language-plaintext highlighter-rouge">monospace</code>. Itemized lists
-look like:</p>
-
-<ul>
-  <li>this one</li>
-  <li>that one</li>
-  <li>the other one</li>
-</ul>
-
-<p>Note that — not considering the asterisk — the actual text
-content starts at 4-columns in.</p>
-
-<blockquote>
-  <p>Block quotes are
-written like so.</p>
-
-  <p>They can span multiple paragraphs,
-if you like.</p>
-</blockquote>
-
-<p>Use 3 dashes for an em-dash. Use 2 dashes for ranges (ex., “it’s all
-in chapters 12–14”). Three dots … will be converted to an ellipsis.
-Unicode is supported. ☺</p>
-
-<h2 id="an-h2-header">An h2 header</h2>
-
-<p>Here’s a numbered list:</p>
-
-<ol>
-  <li>first item</li>
-  <li>second item</li>
-  <li>third item</li>
-</ol>
-
-<p>Note again how the actual text starts at 4 columns in (4 characters
-from the left side). Here’s a code sample:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Let me re-iterate ...
-for i in 1 .. 10 { do-something(i) }
-</code></pre></div></div>
-
-<p>As you probably guessed, indented 4 spaces. By the way, instead of
-indenting the block, you can use delimited blocks, if you like:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>define foobar() {
-    print "Welcome to flavor country!";
-}
-</code></pre></div></div>
-
-<p>(which makes copying &amp; pasting easier). You can optionally mark the
-delimited block for Pandoc to syntax highlight it:</p>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">time</span>
-<span class="c1"># Quick, count to ten!
-</span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-    <span class="c1"># (but not *too* quick)
-</span>    <span class="n">time</span><span class="p">.</span><span class="nf">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
-    <span class="nf">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-</code></pre></div></div>
-
-<h3 id="an-h3-header">An h3 header</h3>
-
-<p>Now a nested list:</p>
-
-<ol>
-  <li>
-    <p>First, get these ingredients:</p>
-
-    <ul>
-      <li>carrots</li>
-      <li>celery</li>
-      <li>lentils</li>
-    </ul>
-  </li>
-  <li>
-    <p>Boil some water.</p>
-  </li>
-  <li>
-    <p>Dump everything in the pot and follow
-this algorithm:</p>
-
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>find wooden spoon
-uncover pot
-stir
-cover pot
-balance wooden spoon precariously on pot handle
-wait 10 minutes
-goto first step (or shut off burner when done)
-</code></pre></div>    </div>
-
-    <p>Do not bump wooden spoon or it will fall.</p>
-  </li>
-</ol>
-
-<p>Notice again how text always lines up on 4-space indents (including
-that last line which continues item 3 above).</p>
-
-<p>Here’s a link to <a href="http://foo.bar">a website</a>, to a <a href="local-doc.html">local
-doc</a>, and to a <a href="#an-h2-header">section heading in the current
-doc</a>. Here’s a footnote <sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>.</p>
-
-<p>Tables can look like this:</p>
-
-<p>Name           Size  Material      Color
-————- —–  ————  ————
-All Business      9  leather       brown
-Roundabout       10  hemp canvas   natural
-Cinderella       11  glass         transparent</p>
-
-<p>Table: Shoes sizes, materials, and colors.</p>
-
-<p>(The above is the caption for the table.) Pandoc also supports
-multi-line tables:</p>
-
-<hr />
-<p>Keyword   Text
-——–  ———————–
-red       Sunsets, apples, and
-          other red or reddish
-          things.</p>
-
-<p>green     Leaves, grass, frogs
-          and other things it’s
-          not easy being.
-——–  ———————–</p>
-
-<p>A horizontal rule follows.</p>
-
-<hr />
-
-<p>Here’s a definition list:</p>
-
-<dl>
-  <dt>apples</dt>
-  <dd>Good for making applesauce.</dd>
-  <dt>oranges</dt>
-  <dd>Citrus!</dd>
-  <dt>tomatoes</dt>
-  <dd>There’s no “e” in tomatoe.</dd>
-</dl>
-
-<p>Again, text is indented 4 spaces. (Put a blank line between each
-term and  its definition to spread things out more.)</p>
-
-<p>Here’s a “line block” (note how whitespace is honored):</p>
-
-<table>
-  <tbody>
-    <tr>
-      <td>Line one</td>
-    </tr>
-    <tr>
-      <td>Line too</td>
-    </tr>
-    <tr>
-      <td>Line tree</td>
-    </tr>
-  </tbody>
-</table>
-
-<p>and images can be specified like so:</p>
-
-<p><img src="https://user-images.githubusercontent.com/9413601/123900693-1d9ebd00-d99c-11eb-8e9e-cf7879187606.png" alt="example image" title="An exemplary image" /></p>
-
-<p>Inline math equation: $\omega = d\phi / dt$. Display
-math should get its own line like so:</p>
-
-<p>$$I = \int \rho R^{2} dV$$</p>
-
-<p>And note that you can backslash-escape any punctuation characters
-which you wish to be displayed literally, ex.: `foo`, *bar*, etc.</p>
-<div class="footnotes" role="doc-endnotes">
-  <ol>
-    <li id="fn:1" role="doc-endnote">
-      <p>Some footnote text. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
-    </li>
-  </ol>
-</div>]]></content><author><name>GitHub User</name></author><category term="markdown" /><category term="example" /><summary type="html"><![CDATA[Paragraphs are separated by a blank line.]]></summary></entry></feed>
+<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoic3RhdGVEaWFncmFtXG5bKl0gLS0-IFN0aWxsXG5TdGlsbCAtLT4gWypdXG4lJS1cblN0aWxsIC0tPiBNb3Zpbmdcbk1vdmluZyAtLT4gU3RpbGxcbk1vdmluZyAtLT4gQ3Jhc2hcbkNyYXNoIC0tPiBbKl0iLCJtZXJtYWlkIjpudWxsfQ" /></p>]]></content><author><name>gonayun</name></author><category term="example" /><category term="mermaid" /><summary type="html"><![CDATA[1. Pie chart]]></summary></entry></feed>
