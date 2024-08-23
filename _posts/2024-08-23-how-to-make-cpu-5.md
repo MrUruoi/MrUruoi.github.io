@@ -1,7 +1,7 @@
 ---
 layout: post
 title: CPU 만들기 (5)
-subtitle: test
+subtitle: 레지스터
 author: gonayun
 categories: etc.
 tags: CPU cpuの創りかた TD4 Fip-Flop
@@ -29,4 +29,4 @@ sidebar: []
 책에는 아래의 내용이 소개되어 있습니다.
 
 * 플립플롭의 데이터 저장과 보존
-* 74HC161, 
+* 74HC161, 74HC153의 설명
